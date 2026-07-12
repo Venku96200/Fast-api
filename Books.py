@@ -65,9 +65,37 @@ async def read_individual_books(book_title:str):  # Makes sure that the paramete
         if book.get('title').casefold()==book_title.casefold():
             return book
 
-    
+'''
+                                  
+                                Query parameters
+A way to filter data based on the URL provided  (filtering is done after a ?)                               
+These are request parameters that have been attached after a "?"
+Query Parameters have ' name=value ' pair
+Ex:- 127.0.0.1:800/books/?category=math
 
+'''
 
+"""  ONLY QUERY PARAMETER """
+@app.get('/books/')     # adding a '/' at the end automatically makes the parameter a query parameter
+async def read_category_by_query(category:str):
+    array=[]
+    for book in BOOKS:
+        if book.get('category')==category:
+            array.append(book)
+    return array
+
+# if we run this http://127.0.0.1:8000/books/?category=science then all books with category as science are printed
+# Or in SWAGGER just enter parameter science
+
+"""  BOTH PATH AND QUERY PARAMETER """
+
+@app.get('/books/{book_author}/')
+async def read_both_path_and_query(book_author:str,category:str):
+    array=[]
+    for book in BOOKS:
+        if book.get('category').casefold()==category.casefold() and book_author.casefold()==book.get('author').casefold():
+            array.append(book)
+    return array
 
 
 
