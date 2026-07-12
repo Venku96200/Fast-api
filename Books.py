@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 
 app=FastAPI() # Here FastAPI() is a class and app is an object
-              # This is to tell to Uvicorn that we are creating a new app
-              #Uvicorn:- Is the web server we use to start a FastAPI application
+              # This is to tell to uvicorn that we are creating a new app
+              #uvicorn:- Is the web server we use to start a FastAPI application
 
 @app.get("/api-endpoint")                  # A decorator which creates an API endpoint
 async def first_api():                     # If someone does an HTTPS request of get("/api-endpoint") somewhere then they will be pointing here
@@ -28,8 +28,6 @@ BOOKS=[
 async def read_all_books():
     return BOOKS
 
-
-
 # -------- SWAGGER-------------------------
 '''
     # Automatically implemented with fastapi
@@ -39,4 +37,40 @@ async def read_all_books():
     
     Just do:- http://127.0.0.1:8000/docs
 '''
+
+
+''' -------------------------------------------------------------------------------------
+Path parameter:-  is a way for us to be able to locate in fastapi where we want an application to run and its just overall path of a URL
+
+All the endpoints that we have discussed at the top have a STATIC PATH PARAMETER
+
+If we want to access First/Second book from the dictionary, then its not 
+recommended to create multiple api endpoints for each book, INSTEAD
+we create an api endpoint with dynamic path
+to add spaces in URl use %20
+
+ORDER OF API_ENDPOINTS MATTERS WITH PARAMETERS
+# All the endpoints with static parms should be at the top of the dynamic ones
+
+I commented it out because it was causing ORDER problem
+
+@app.get("/books/{dynamic_param}")        # If we provide a dynamic_param while get request,
+async def try_out_dynamic_param(dynamic_param):  # We can pass that in the function and use it
+    return {'dynamic_param':dynamic_param}
+'''
+
+@app.get("/books/{book_title}")
+async def read_individual_books(book_title:str):  # Makes sure that the parameter is string
+    for book in BOOKS:
+        if book.get('title').casefold()==book_title.casefold():
+            return book
+
+    
+
+
+
+
+
+
+
 
