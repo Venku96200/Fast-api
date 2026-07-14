@@ -2,6 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="53c93e99-72f7-4ade-b574-7843aad05d68" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Books2.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fastapienv/Books2.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Books.py" beforeDir="false" afterPath="$PROJECT_DIR$/Books.py" afterDir="false" />
     </list>
@@ -25,23 +27,31 @@
   &quot;fromUser&quot;: false
 }</component>
   <component name="ProjectId" id="3GOWUtBhha4i28SScVE6JijacVo" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "codeWithMe.voiceChat.enabledByDefault": "false",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "C:/Users/mahan/Documents/fastapi",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/mahan/Documents/fastapi&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\mahan\Documents\fastapi" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -57,7 +67,14 @@
       <option name="presentableId" value="Default" />
       <updated>1783843114616</updated>
       <workItem from="1783843115652" duration="6205000" />
-      <workItem from="1783852709867" duration="3942000" />
+      <workItem from="1783852709867" duration="4500000" />
+      <workItem from="1783859876653" duration="6317000" />
+      <workItem from="1783914333480" duration="2187000" />
+      <workItem from="1783938162624" duration="5936000" />
+      <workItem from="1783948460596" duration="50000" />
+      <workItem from="1784012986484" duration="1404000" />
+      <workItem from="1784016026985" duration="2305000" />
+      <workItem from="1784022399856" duration="6996000" />
     </task>
     <servers />
   </component>

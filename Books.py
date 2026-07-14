@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import Body, FastAPI
 
 app=FastAPI() # Here FastAPI() is a class and app is an object
               # This is to tell to uvicorn that we are creating a new app
@@ -68,14 +68,16 @@ async def read_individual_books(book_title:str):  # Makes sure that the paramete
 '''
                                   
                                 Query parameters
+                                
+                                
 A way to filter data based on the URL provided  (filtering is done after a ?)                               
 These are request parameters that have been attached after a "?"
 Query Parameters have ' name=value ' pair
 Ex:- 127.0.0.1:800/books/?category=math
-
 '''
 
 """  ONLY QUERY PARAMETER """
+
 @app.get('/books/')     # adding a '/' at the end automatically makes the parameter a query parameter
 async def read_category_by_query(category:str):
     array=[]
@@ -97,6 +99,62 @@ async def read_both_path_and_query(book_author:str,category:str):
             array.append(book)
     return array
 
+
+
+'''
+---------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------
+                            POST REQUEST METHOD
+   # Used to create data
+   #  Post can have a body that has additional information that GET does not have 
+   # Only JSON input is allowed int body
+'''
+
+@app.post("/books/create_book")
+async def create_book(new_book=Body()):   # Body() gets the input that we give to post request
+    BOOKS.append(new_book)
+
+'''
+---------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+                            PUT REQUEST METHOD
+   # Almost same as post, but instead of creating new data, we UPDATE the current data
+'''
+
+@app.put("/books/update_book")
+async def update_book(updated_book=Body()):
+    for i in range(len(BOOKS)):
+        if BOOKS[i].get('title').casefold()==updated_book.get("title").casefold():
+            BOOKS[i]=updated_book
+
+
+'''
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+                           DELETE REQUEST METHOD
+'''
+
+@app.delete("/books/delete_book/{book_title}")
+async def delete_book(book_title:str):
+    for book in BOOKS:
+        if book.get('title').casefold()==book_title.casefold():
+            BOOKS.remove(book)
+    return BOOKS
+
+
+# ASSIGNMENT
+'''   Create a new API Endpoint that can fetch all books 
+from a specific author using either Path Parameters or Query Parameters.'''
+
+
+@app.get("/books/assignment/{author_name}")      # Used ss
+async def assignment(author_name:str):
+    array=[]
+    for book in BOOKS:
+        if book.get('author').casefold()==author_name.casefold():
+            array.append(book)
+
+    return array
 
 
 
