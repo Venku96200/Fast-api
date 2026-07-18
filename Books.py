@@ -52,7 +52,7 @@ to add spaces in URl use %20
 ORDER OF API_ENDPOINTS MATTERS WITH PARAMETERS
 # All the endpoints with static parms should be at the top of the dynamic ones
 
-I commented it out because it was causing ORDER problem
+I commented it out because it was causing ORDER PROBLEM
 
 @app.get("/books/{dynamic_param}")        # If we provide a dynamic_param while get request,
 async def try_out_dynamic_param(dynamic_param):  # We can pass that in the function and use it

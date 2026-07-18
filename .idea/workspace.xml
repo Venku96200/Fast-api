@@ -2,10 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="53c93e99-72f7-4ade-b574-7843aad05d68" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Books2.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/fastapienv/Books2.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Books.py" beforeDir="false" afterPath="$PROJECT_DIR$/Books.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Books2.py" beforeDir="false" afterPath="$PROJECT_DIR$/Books2.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -74,7 +73,8 @@
       <workItem from="1783948460596" duration="50000" />
       <workItem from="1784012986484" duration="1404000" />
       <workItem from="1784016026985" duration="2305000" />
-      <workItem from="1784022399856" duration="6996000" />
+      <workItem from="1784022399856" duration="8083000" />
+      <workItem from="1784348103768" duration="9773000" />
     </task>
     <servers />
   </component>

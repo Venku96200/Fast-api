@@ -13,7 +13,7 @@ from fastapi import HTTPException                # HTTP exception is something t
 from fastapi import FastAPI, Body, Path, Query   # Path and Query are there for Data Validation of the Input through Path Parameters and Query Parameters
 from pydantic import BaseModel, Field            # We will use BaseModel to validate the variables in object
                                                  # Field is used to add validation to each Field(Key) of the request object
-from starlette import status       # When a api-endpoint successfully responses, we should provide specific STATUS_CODES
+from starlette import status       # When api-endpoint successfully responses, we should provide specific STATUS_CODES
 class Book:
     id:int
     title:str
@@ -27,7 +27,6 @@ class Book:
         self.author=author
         self.description=description
         self.rating=rating
-
 
 app=FastAPI()
 BOOKS=[
@@ -54,7 +53,7 @@ Why do we need validation:--(Making sure that our Data is correct before creatin
 1) post:- we need to make sure that we dont create a wrong data ( Ex:- creating a book with -500 rating points/ creating a nude book  etc)
 
 We will use Pydantics to implement Data Validation, Data handling, Data parsing, Efficient error Handling
- 1) Insted of Body() we will use BaseModel to get somemore features
+ 1) Instead of Body() we will use BaseModel to get somemore features
   Ex:- Field():- Used for data validation of the data that is coming in
 '''
 
@@ -123,14 +122,14 @@ adds the Book object to the list.
 
 
 class BookRequest2(BaseModel):         # Instead of just checking the datatype validation ,We will also do some specific validations using FIELD
-    id:Optional[int]=None              # The author sometimes doesn't know what is th id of the previous book, so me may not know the id, hence he can leave it Empty(NONE) or Enter and Int
-    title:str=Field(min_length=3)      # User cannot input a JSON with len(title) shorted than 3 characters
+    id:Optional[int]=None              # The author sometimes doesn't know what is the id of the previous book, so me may not know which id number to give to his book, hence he can leave it Empty(NONE) or Enter an Int
+    title:str=Field(min_length=3)      # User cannot input a JSON with len(title) shorter than 3 characters
     author:str=Field(min_length=1)     # author name should be greater than 1 character
     description:str= Field(min_length=1,max_length=100)  # Description should lie btw 1 to 100 characters
     rating:int=Field(gt=-1,lt=6)        # The rating Should be greater than -1 but less than 6
 
 @app.post("/create-book-pydantic-withField" , status_code=status.HTTP_200_OK)
-async def create_books(book_request: BookRequest2):    # The parameter book_request must be a object of BookRequest
+async def create_books(book_request: BookRequest2):    # The parameter book_request must be an object of BookRequest2
     new_book=Book(**book_request.model_dump())
     find_book_id(new_book)   # Overwriting the new_book.id with the valid id
     BOOKS.append(new_book)
