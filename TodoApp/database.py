@@ -152,7 +152,7 @@ Think of SQLAlchemy as a translator.
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker  # sessionmaker is a class (technically, a callable factory class in SQLAlchemy).
 from sqlalchemy.ext.declarative import declarative_base # Used to create a Database object, We can interact with it later on
-SQLALCHEMY_DATABASE_URL='sqlite:///./todos.db'   # Create a location for our database in our application
+SQLALCHEMY_DATABASE_URL='sqlite:///./todosapp.db'   # Create a location for our database in our application
 
 engine=create_engine(SQLALCHEMY_DATABASE_URL,connect_args={'check_same_thread':False})
 SessionLocal=sessionmaker(autocommit=False,autoflush=False,bind=engine)
