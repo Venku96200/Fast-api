@@ -185,7 +185,11 @@ from fastapi.security import OAuth2PasswordRequestForm # We should use these as 
 from fastapi.security import OAuth2PasswordBearer # It tells fastAPI that "My application uses Bearer Tokens (JWTs) for authentication."
 from jose import jwt, JWTError  # A JWT needs a secret and an algorithm
 from datetime import timedelta, datetime, timezone
-router =APIRouter()    # Instead of creating a new APP for the authorization endpoints, create a router and route in to main.py
+router =APIRouter(           # Instead of creating a new APP for the authorization endpoints, create a router and route in to main.py
+    prefix='/auth',          # Instead to showing all the apiendpoints together in Swagger, we will split auth,todos endpoints separately
+    tags=['auth']
+)
+
 
 # The Secret and algorithm will work together to add a signature to the JWT to make sure that JWT is secure and authorized
 SECRET_KEY='randomshitSECREATIMGAY873897fe975639a50f1d73869f8f0d07155c8480fa'
@@ -194,8 +198,8 @@ ALGORITHM='HS256'
 
 
 bcrypt_context=CryptContext(schemes=['bcrypt'], deprecated='auto')  # Inside our bcrypt_context algorithm we can now use bcrypt
-oauth2_bearer= OAuth2PasswordBearer(tokenUrl='token') # This parameter contains the URL that the client will send to our FastAPI application
-                                                      # So we need this just to verify the token as a dependency in our API request
+oauth2_bearer= OAuth2PasswordBearer(tokenUrl='auth/token') # This parameter contains the URL that the client will send to our FastAPI application
+                                                           # So we need this just to verify the token as a dependency in our API request
 class CreateUserRequest(BaseModel):
     username:str
     email:str
@@ -236,9 +240,9 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
         return {'username':username,'user_id':user_id}
     except JWTError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
-                                detail='Could not validate credentials')
+                                detail='Could not validate User')
 
-@router.post("/auth", status_code=status.HTTP_201_CREATED)
+@router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_user(db:db_dependency , create_user_request: CreateUserRequest):
     create_user_model=Users(
         email=create_user_request.email,
@@ -273,7 +277,8 @@ async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm,
                                  db:db_dependency):
     user=authenticate_user(form_data.username,form_data.password, db)
     if not user:
-        return "Failed Authentication"
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                            detail='Could not validate User')
     token=create_access_token(user.username,user.id,timedelta(minutes=20))
     return {'access_token':token,'token_type': 'bearer'}
 
