@@ -10,10 +10,11 @@
  
  
  Hashing:-  (pip install paslib, pip install bcrypt==4.0.1)
- We convert the password into a Hash using bcrypt
- We then save that hashed password into our database
- This is done to provide security and getting hacked etc
+             We convert the password into a Hash using bcrypt
+             We then save that hashed password into our database
+             This is done to provide security and getting hacked etc
  
+ # Depends(get_db()) :- Before calling my function, run get_db() and inject its result into the db parameter.
  
  Authenticate a User:-
    Letting user authenticate himself to signin as a user in our database
@@ -33,7 +34,7 @@
 
       # FastAPI cannot parse this format by itself
       
-      
+ -------------------------------------------------------------------------------------     
 FORMS:-
        # A form is simply a way for a user to send information to a server.
            ex:- a login page:
@@ -52,7 +53,7 @@ FORMS:-
                                     password: str = Form()
                                 ):
                                     return {"username": username}
-                                    
+ --------------------------------------------------------------------------------                                   
                                     
 JWT(Json Web Tokens) Overview    (CHECK NOTES)
    # JWT is a self-contained way to securely transmit data and information between two parties using a JSON Object               
@@ -83,7 +84,88 @@ JWT(Json Web Tokens) Overview    (CHECK NOTES)
                                      ▼
                               Allow / Deny Access
                               
-   We will have to install "python-jose[cryptography]" library to USE JWTs                           
+   We will have to install "python-jose[cryptography]" library to USE JWTs 
+ -------------------------------------------------------------------------------------  
+       JWT.encode() :-                {
+                                       "sub":"venku",
+                          Dictionary   "id":5,
+                                       "exp":...
+                                      }
+                            ↓
+                            Compress
+                            ↓                           
+                            Encrypt the signature                            
+                            ↓                        
+                            Return String   (eyJhbGciOiJIUzI1NiIsInR5...      )    
+----------------------------------------------------------------------------------------                            
+   ENTIRE FLOW:-         Register
+                            │
+                            ▼
+                        Store hashed password
+                            │
+                            ▼
+                        Login
+                        (username + password)
+                            │
+                            ▼
+                        bcrypt verifies password
+                            │
+                            ▼
+                        Authentication succeeds
+                            │
+                            ▼
+                        create_access_token()
+                            │
+                            ▼
+                        JWT:
+                        {
+                         id:5,
+                         sub:"venku",
+                         exp:...
+                        }
+                            │
+                            ▼
+                        jwt.encode(...)
+                            │
+                            ▼
+                        "eyJhbGc..."
+                            │
+                            ▼
+                        Client stores JWT
+                            │
+                            ▼
+                        Every future request sends:
+                        
+                        Authorization: Bearer eyJhbGc...
+                            │
+                            ▼
+                        Server decodes JWT
+                            │
+                            ▼
+                        Gets user id = 5
+                            │
+                            ▼
+                        Loads user from database
+                            │
+                            ▼
+                        Allows or denies the request  
+-----------------------------------------------------------------------------------                        
+ Why do we create a Token class, 
+ Why return object of Token class after authentication   
+ Why not just return Token   
+ :---------
+ 1) Token class is just a blueprint to the Token object that we must return after authentication
+ 2) Imagine if we just return a large string Token after authentication
+    the frontend will get confused, on what it is. Hence we return an object
+    that contains the Token and the Token_type
+    
+ ------------------------------------------
+ 
+ we can paste the JWT token in JWT.io and we can see the HEADER,PAYLOAD,SIGNATURE   
+ --------------------------------------------------------------------------------
+ 
+ Now we will learn Decoding JWT, Decoding JWT will be used more often
+                                                         
 '''
 
 
@@ -94,12 +176,14 @@ from typing import Annotated
 from sqlalchemy.orm import Session
 from starlette import status
 from database import SessionLocal
-from fastapi import FastAPI, APIRouter,Depends  # APIRouter will allow us to be able to route from our main.py file to our auth.py file
+from fastapi import FastAPI, APIRouter, Depends, \
+    HTTPException  # APIRouter will allow us to be able to route from our main.py file to our auth.py file
 from pydantic import BaseModel
 from Models import Users
 from passlib.context import CryptContext   # Used for encrypting the passwords
-from fastapi.security import OAuth2PasswordRequestForm  # We should use this as a dependency injection gor our apiendpoints
-from jose import jwt  # A JWT needs a secret and an algorithm
+from fastapi.security import OAuth2PasswordRequestForm # We should use these as a dependency injection for our apiendpoints
+from fastapi.security import OAuth2PasswordBearer # It tells fastAPI that "My application uses Bearer Tokens (JWTs) for authentication."
+from jose import jwt, JWTError  # A JWT needs a secret and an algorithm
 from datetime import timedelta, datetime, timezone
 router =APIRouter()    # Instead of creating a new APP for the authorization endpoints, create a router and route in to main.py
 
@@ -110,7 +194,8 @@ ALGORITHM='HS256'
 
 
 bcrypt_context=CryptContext(schemes=['bcrypt'], deprecated='auto')  # Inside our bcrypt_context algorithm we can now use bcrypt
-
+oauth2_bearer= OAuth2PasswordBearer(tokenUrl='token') # This parameter contains the URL that the client will send to our FastAPI application
+                                                      # So we need this just to verify the token as a dependency in our API request
 class CreateUserRequest(BaseModel):
     username:str
     email:str
@@ -119,6 +204,9 @@ class CreateUserRequest(BaseModel):
     password:str
     role:str
 
+class Token(BaseModel):
+    access_token:str
+    token_type:str
 
 def get_db():
     db = SessionLocal()  # Runs first and creates a session
@@ -130,15 +218,25 @@ def get_db():
 db_dependency = Annotated[Session, Depends(get_db)]
 
 def create_access_token(username:str,user_id:int,expires_delta:timedelta):
-
     # The information that lives inside a JWT
     encode={'sub':username,'id':user_id}
     expires=datetime.now(timezone.utc)+expires_delta
     encode.update({'exp':expires})
     return jwt.encode(encode,SECRET_KEY,algorithm=ALGORITHM)
 
-
-
+#Each todos in the future that needs security, We are going to call this get current user first to verify the token that's getting passes in as the OAuth2bearertoken() in our client call
+async def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
+    try:
+        payload=jwt.decode(token,SECRET_KEY,algorithms=[ALGORITHM])
+        username:str=payload.get('sub')
+        user_id:int=payload.get('id')
+        if username is None or user_id is None:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                                detail='Could not validate credentials')
+        return {'username':username,'user_id':user_id}
+    except JWTError:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                                detail='Could not validate credentials')
 
 @router.post("/auth", status_code=status.HTTP_201_CREATED)
 async def create_user(db:db_dependency , create_user_request: CreateUserRequest):
@@ -168,15 +266,16 @@ def authenticate_user(username:str,password:str,db):
     if not bcrypt_context.verify(password, user.hashed_password):
         return False
     else:
-        return True
+        return user
 
-@router.post("/token")
+@router.post("/token", response_model=Token) # Response of this API request will be an object of Token class
 async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
                                  db:db_dependency):
     user=authenticate_user(form_data.username,form_data.password, db)
     if not user:
         return "Failed Authentication"
-    return "Successful Authentication"
+    token=create_access_token(user.username,user.id,timedelta(minutes=20))
+    return {'access_token':token,'token_type': 'bearer'}
 
 
 
